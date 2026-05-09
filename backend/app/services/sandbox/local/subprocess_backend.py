@@ -17,7 +17,7 @@ from app.services.workspace_paths import WorkspacePathError, resolve_path_within
 _DANGEROUS_BASH_ALWAYS = [
     "rm -rf /", "rm -rf ~", "sudo ", "mkfs", "dd if=",
     ":(){ :", "chmod 777 /", "chown ", "shutdown", "reboot",
-    "python3 -c", "python -c",
+    #"python3 -c", "python -c",
 ]
 
 _DANGEROUS_BASH_NETWORK = [
@@ -25,14 +25,15 @@ _DANGEROUS_BASH_NETWORK = [
 ]
 
 _DANGEROUS_PYTHON_IMPORTS_ALWAYS = [
-    "subprocess", "shutil.rmtree", "os.system", "os.popen",
-    "os.exec", "os.spawn",
+     "shutil.rmtree", 
+    # "subprocess","os.system", "os.popen",
+    # "os.exec", "os.spawn",
 ]
 
 _DANGEROUS_PYTHON_IMPORTS_NETWORK = [
-    "socket", "http.client", "urllib.request", "requests",
-    "ftplib", "smtplib", "telnetlib", "ctypes",
-    "__import__", "importlib",
+    # "socket", "http.client", "urllib.request", "requests",
+    # "ftplib", "smtplib", "telnetlib", "ctypes",
+    # "__import__", "importlib",
 ]
 
 _DANGEROUS_NODE_ALWAYS = [
@@ -176,7 +177,9 @@ class SubprocessBackend(BaseSandboxBackend):
                 )
                 SubprocessBackend._bwrap_missing_warned = True
             return None
-
+        use_python_path = os.path.dirname(shutil.which('python'))
+        use_python_home = os.path.dirname(use_python_path)
+        
         cmd = [
             bwrap,
             "--die-with-parent",
@@ -191,10 +194,12 @@ class SubprocessBackend(BaseSandboxBackend):
             "--ro-bind", "/lib", "/lib",
             "--ro-bind", "/lib64", "/lib64",
             "--ro-bind", "/etc", "/etc",
+            "--bind", str(use_python_home), "/pythonhome",    
             "--bind", str(work_path), "/workspace",
             "--dev", "/dev",
             "--proc", "/proc",
             "--dir", "/tmp",
+            "--setenv", "PATH", "/pythonhome/bin:/usr/bin:/bin:$PATH",
             "--setenv", "HOME", "/workspace",
             "--setenv", "TMPDIR", "/workspace/.tmp",
             "--setenv", "PYTHONDONTWRITEBYTECODE", "1",

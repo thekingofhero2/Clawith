@@ -23,7 +23,7 @@ venv/
 # Runtime agent data
 backend/data/
 backend/agent_data/
-ss-nodes.json
+backend/alembic.ini
 .data/
 
 # Ignore Antigravity / Claude Code agent configurations
@@ -35,3 +35,4 @@ _agents/
 # Internal docs
 docs/
 .agents/rules/deploy.md
+backend/alembic.ini
