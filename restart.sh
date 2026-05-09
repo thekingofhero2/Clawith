@@ -190,7 +190,7 @@ start_backend() {
         .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT \
         > "$BACKEND_LOG" 2>&1 &
     echo $! > "$BACKEND_PID"
-    wait_for_port $BACKEND_PORT "Backend" 10
+    wait_for_port $BACKEND_PORT "Backend" 60
 }
 
 # ═══════════════════════════════════════════════════════
@@ -202,7 +202,7 @@ start_frontend() {
     nohup node_modules/.bin/vite --host 0.0.0.0 --port $FRONTEND_PORT \
         > "$FRONTEND_LOG" 2>&1 &
     echo $! > "$FRONTEND_PID"
-    wait_for_port $FRONTEND_PORT "Frontend" 8
+    wait_for_port $FRONTEND_PORT "Frontend" 20
 }
 
 # ═══════════════════════════════════════════════════════
