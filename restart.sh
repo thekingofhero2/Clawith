@@ -237,7 +237,7 @@ start_backend() {
             PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}" \
             DATABASE_URL="$DATABASE_URL" \
             .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT
-    wait_for_port $BACKEND_PORT "Backend" 10
+    wait_for_port $BACKEND_PORT "Backend" 60
 }
 
 # ═══════════════════════════════════════════════════════
@@ -251,7 +251,7 @@ start_frontend() {
     # keeping the normal dev server behavior.
     start_detached "$FRONTEND_DIR" "$FRONTEND_LOG" "$FRONTEND_PID" \
         env CI=true node_modules/.bin/vite --host 0.0.0.0 --port $FRONTEND_PORT --strictPort
-    wait_for_port $FRONTEND_PORT "Frontend" 8
+    wait_for_port $FRONTEND_PORT "Frontend" 60
 }
 
 # ═══════════════════════════════════════════════════════

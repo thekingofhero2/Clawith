@@ -431,6 +431,9 @@ async def call_llm(
     # Convert messages to LLMMessage format
     api_messages = [LLMMessage(role="system", content=static_prompt, dynamic_content=dynamic_prompt)]
     for msg in messages:
+        if msg.get("role", "user") == 'system':
+            api_messages[0].content += msg.get("content")
+            continue
         api_messages.append(LLMMessage(
             role=msg.get("role", "user"),
             content=msg.get("content"),
