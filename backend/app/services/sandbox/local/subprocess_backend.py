@@ -225,9 +225,18 @@ class SubprocessBackend(BaseSandboxBackend):
                 )
                 SubprocessBackend._bwrap_missing_warned = True
             return None
-        use_python_path = os.path.dirname(shutil.which('python'))
-        use_python_home = os.path.dirname(use_python_path)
+        #use_python_path = os.path.dirname(shutil.which('python'))
+        #use_python_home = os.path.dirname(use_python_path)
         
+        base_binds = (
+            self._bind_if_exists("/usr")
+            + self._bind_if_exists("/usr/local")
+            + self._bind_if_exists("/bin")
+            + self._bind_if_exists("/lib")
+            + self._bind_if_exists("/lib64")
+            + self._bind_if_exists("/etc")
+        )
+
         cmd = [
             bwrap,
             "--die-with-parent",
@@ -238,12 +247,12 @@ class SubprocessBackend(BaseSandboxBackend):
             "--unshare-uts",
             "--unshare-cgroup",
             *base_binds,
-            "--bind", str(use_python_home), "/pythonhome",    
+            #"--bind", str(use_python_home), "/pythonhome",    
             "--bind", str(work_path), "/workspace",
             "--dev", "/dev",
             "--proc", "/proc",
             "--dir", "/tmp",
-            "--setenv", "PATH", "/pythonhome/bin:/usr/bin:/bin:$PATH",
+           # "--setenv", "PATH", "/pythonhome/bin:/usr/bin:/bin:$PATH",
             "--setenv", "HOME", "/workspace",
             "--setenv", "PATH", f"/workspace/.venv/bin:{os.environ.get('PATH', '/usr/bin:/bin')}",
             "--setenv", "TMPDIR", "/workspace/.tmp",
